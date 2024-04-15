@@ -1,0 +1,25 @@
+on:
+    push:
+        branches:
+            - main
+jobs:
+    build-deploy:
+        runs-on: ubuntu-latest
+  # set up python and aws environment with docker container with ubuntu system
+        steps:
+            - uses: actions/checkout@main
+            - uses: actions/setup-python@v3
+            - uses: aws-actions/setup-sam@v1
+            - uses: aws-actions/configure-aws-credentials@v1
+              with:
+                aws-access-key-id: ${{secrets.SECRET1 }}
+                aws-secret-access-key: ${{secrets.SECRET2}}
+                aws-region: ap-south-1
+  
+            - name: Build SAM Artifacts
+              run: sam build --use-container
+  
+  # SAM deploy
+            - name: Deploy SAM app
+              run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset --s3-bucket aws-sam-cli-managed-default-samclisourcebucket-lstta35jhsjo --region ap-south-1 --stack-name TEST-APP --capabilities=CAPABILITY_IAM -t template.yaml
+  

@@ -1,0 +1,4 @@
+requests
+urllib3 < 1.27
+google-auth
+rsa<4.8
